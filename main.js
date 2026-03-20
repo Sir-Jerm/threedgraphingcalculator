@@ -1,4 +1,4 @@
-import * as math from 'https://cdn.jsdelivr.net'; 
+//import math from 'https://cdn.jsdelivr.net/npm/mathjs@11/lib/browser/math.js'; 
 
 let canvas = document.querySelector('canvas');
 let ctx = canvas.getContext('2d');
@@ -27,11 +27,6 @@ function calculationForRealToPix(x, y, z) {
     }
     else return [(factor * (x - camera.pos[0]) / (z - camera.pos[2])) + (cw / 2),
     (factor * (y - camera.pos[1]) / (z - camera.pos[2])) + (10 * cw / 45)];
-}
-function realPointToPixPoint(x, y, z) {
-    let p = 0//0.1 + camera.pos[2] - z;
-    if (z > camera.pos[2]) return calculationForRealToPix(x, y, z)
-    else return calculationForRealToPix(x, y, z + p);
 }
 function realPointToPixPoint(pos) {
     if (seebackwards) return calculationForRealToPix(pos[0], pos[1], pos[2]);
@@ -333,11 +328,11 @@ class Triangle {
 }
 
 /**ONLY realPoints */
-function rotateY(point, radians) {
+/*function rotateY(point, radians) {
     let x = point.posReal[0] * Math.cos(radians) + point.posReal[2] * Math.sin(radians);
     let z = point.posReal[2] * Math.cos(radians) - point.posReal[0] * Math.sin(radians);
     return [x, point.posReal[1], z];
-}
+}*/
 function rotateY(x, y, z, radians) {
     let xl = x * Math.cos(radians) + z * Math.sin(radians);
     let zl = z * Math.cos(radians) - x * Math.sin(radians);
@@ -389,18 +384,6 @@ function rotatePointbyPoint(x, y, z, u, v, w, theta) {
     let newy = (v * ((u * x) + (v * y) + (w * z)) * (1 - Math.cos(theta)) + ((u * u) + (v * v) + (w * w)) * (y * Math.cos(theta)) + Math.sqrt((u * u) + (v * v) + (w * w)) * (-(u * z) + (w * x)) * Math.sin(theta)) / ((u * u) + (v * v) + (w * w));
     let newz = (w * ((u * x) + (v * y) + (w * z)) * (1 - Math.cos(theta)) + ((u * u) + (v * v) + (w * w)) * (z * Math.cos(theta)) + Math.sqrt((u * u) + (v * v) + (w * w)) * ((v * x) - (u * y)) * Math.sin(theta)) / ((u * u) + (v * v) + (w * w));
     return [newx, newy, newz];
-}
-function findCenter() {
-    let x = 0;
-    let y = 0;
-    let z = 0;
-    for (let i = 0; i < arguments.length; i++) {
-        x += arguments[i].posReal[0];
-        y += arguments[i].posReal[1];
-        z += arguments[i].posReal[2];
-    }
-    //console.log(x, y, z, arguments.length);
-    return [x / arguments.length, y / arguments.length, z / arguments.length]
 }
 function findCenter(points) {
     let x = 0;
@@ -1044,7 +1027,7 @@ function vectorGraphing(equationX, equationY, equationZ, adder = 1) {
                 let solvedY = equationJSY.evaluate({ x: x, y: y, z: z });
                 let solvedZ = equationJSZ.evaluate({ x: x, y: y, z: z });
                 points.push(new Point([x, y, z], false));
-                points.push(new Point(makeShorterTheMagnitude([x, y, z], [solvedX, solvedY, solvedZ], 1.1), true, 'rgba(255, 255, 255, 0.13)'));
+                points.push(new Point(makeShorterTheMagnitude([x, y, z], [solvedX, solvedY, solvedZ], 1.1), true, 'rgba(0, 255, 242, 0.54)'));
                 lines.push(new Line(points[points.length - 1], points[points.length - 2], true,
                     `hsl(${distance3D([x, y, z], [solvedX, solvedY, solvedZ]) * 10},100%,50%)`));
 
@@ -1058,11 +1041,11 @@ function vectorGraphing(equationX, equationY, equationZ, adder = 1) {
         }
     }
     //console.log(vector)
-    points.push(new Particle([0.1,0.1,0.1],[0,0,0],[
+    /*points.push(new Particle([0.1,0.1,0.1],[0,0,0],[
         equationJSX,
         equationJSY,
         equationJSZ
-    ],3,true,"hsl(222, 100%, 77%)"));
+    ],3,true,"hsl(222, 100%, 77%)"));*/
     r = new Shape(points, true, lines, null);
     newCube(5);
 }
@@ -1082,7 +1065,7 @@ function parametricLineGraphing(equationX, equationY, equationZ, adder = 0.01) {
         triangles.deleteAllTriangles();
     }
 
-    boundary = 5;
+    //boundary = 5;
     //to put all the points and lines into one shape
     let points = [];
     let lines = [];
@@ -1285,4 +1268,15 @@ let animation = setInterval(animate, 10);
 
 function stopAnimate() {
     clearInterval(animation);
+}
+
+export {
+    ctx,
+    max,
+    universalAdder,
+    universalEquation,
+    grapherEqu,
+    grapherParametricEqu,
+    vectorGraphing,
+    parametricLineGraphing
 }
