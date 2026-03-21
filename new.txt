@@ -256,3 +256,446 @@ setInterval(() => {
     r.rotateByPointXYZ(0 / 30, 1.5 / 30, 0 / 30, center);
     cube.rotateByPointXYZ(0 / 30, 1.5 / 30, 0 / 30, center);
 }, 100)
+
+
+class Pyramid extends Shape {
+    static all = {};
+    /**
+     * 
+     * @param {Point} p1 right;
+     * @param {Point} p2 left;
+     * @param {Point} p3 top;
+     * @param {Point} p4 backleft;
+     * @param {Point} p5 backright;
+     * 
+     * all points display must be false.
+     * 
+    */
+    constructor(p1, p2, p3, p4, p5, display = true, color = 'hsl(0,100%,50%)', pointdisplay = false, linewidth = 1) {
+        super();
+        this.points = [p1, p2, p3, p4, p5];
+        this.p1 = p1;
+        this.p2 = p2;
+        this.p3 = p3;
+        this.p4 = p4;
+        this.p5 = p5;
+        this.display = display;
+        this.color = color;
+        this.pointdisplay = pointdisplay;
+        this.linewidth = linewidth;
+
+        this.center = new Point(findCenter(p1, p2, p3, p4, p5), pointdisplay, this.color);
+
+        this.lines = [
+            new Line(p1, p3, display, color, linewidth),
+            new Line(p2, p3, display, color, linewidth),
+            new Line(p4, p3, display, color, linewidth),
+            new Line(p5, p3, display, color, linewidth),
+            new Line(p1, p2, display, color, linewidth),
+            new Line(p1, p5, display, color, linewidth),
+            new Line(p2, p4, display, color, linewidth),
+            new Line(p4, p5, display, color, linewidth)
+        ]
+
+        this.id = Math.random();
+        Pyramid.all[this.id] = this;
+    }
+
+}
+
+class Octahedron extends Shape {
+    static all = {};
+    /**
+     * 
+     * @param {Point} p1 right;
+     * @param {Point} p2 left;
+     * @param {Point} p3 top;
+     * @param {Point} p4 backleft;
+     * @param {Point} p5 backright;
+     * @param {Point} p6 bottom;
+     * 
+     * all points display must be false.
+     * 
+    */
+    constructor(p1, p2, p3, p4, p5, p6, display = true, color = 'hsl(0,100%,50%)', pointdisplay = false, linewidth = 1) {
+        super();
+        this.points = [p1, p2, p3, p4, p5, p6];
+        this.p1 = p1;
+        this.p2 = p2;
+        this.p3 = p3;
+        this.p4 = p4;
+        this.p5 = p5;
+        this.p6 = p6;
+        this.display = display;
+        this.color = color;
+        this.pointdisplay = pointdisplay;
+        this.linewidth = 1;
+
+        this.center = new Point(findCenter(p1, p2, p3, p4, p5, p6), pointdisplay, this.color);
+
+        this.lines = [
+            new Line(p1, p3, display, color, linewidth),
+            new Line(p2, p3, display, color, linewidth),
+            new Line(p4, p3, display, color, linewidth),
+            new Line(p5, p3, display, color, linewidth),
+            new Line(p1, p2, display, color, linewidth),
+            new Line(p1, p5, display, color, linewidth),
+            new Line(p2, p4, display, color, linewidth),
+            new Line(p4, p5, display, color, linewidth),
+            new Line(p1, p6, display, color, linewidth),
+            new Line(p2, p6, display, color, linewidth),
+            new Line(p4, p6, display, color, linewidth),
+            new Line(p5, p6, display, color, linewidth),
+        ]
+
+        this.id = Math.random();
+        Octahedron.all[this.id] = this;
+    }
+}
+
+class Sphere extends Shape {
+    constructor(center, radius, display = true, color = 'hsl(200,100%,50%)') {
+        super();
+        this.center = new Point(center, display, color);
+        this.radius = radius;
+        this.display = display;
+        this.color = color;
+        this.points = [];
+        this.lines = [];
+        let rS = radius;
+        let mqx = 3;
+        for (let i = 0; i < 6.1 * mqx; i++) {
+            for (let j = 0; j < 6.1 * mqx; j++) {
+                this.points.push(new Point([Math.cos(i) * Math.cos(j) * rS + center[0],
+                Math.sin(i) * rS + center[1], Math.sin(j) * Math.cos(i) * rS + center[2]], display, color));
+            }
+        }
+    }
+}
+
+class HyperSphere extends Shape {
+    constructor(center, radius, display = true, color = 'hsl(200,100%,50%)') {
+        super();
+        this.center = new Point(center, display, color);
+        this.radius = radius;
+        this.display = display;
+        this.color = color;
+        ///**@type {Point} */
+        this.points = [];
+        this.lines = [];
+        this.f4d = 0;
+    }
+    makePoints(angleW) {
+        //this.deleteAllPoints();
+        let rS = this.radius;
+        let mqx = 3;
+        this.f4d = Math.sin(angleW) * rS;
+        if (this.points.length === 0) {
+            for (let i = 0; i < 6.1 * mqx; i++) {
+                for (let j = 0; j < 6.1 * mqx; j++) {
+                    //console.log(Math.cos(i) * Math.cos(j) * Math.cos(angleW) * rS+this.center.posReal[0])
+                    this.points.push(new Point([
+                        Math.cos(i) * Math.cos(j) * Math.cos(angleW) * rS + this.center.posReal[0],
+                        Math.sin(i) * Math.cos(angleW) * rS + this.center.posReal[1],
+                        Math.sin(j) * Math.cos(i) * Math.cos(angleW) * rS + this.center.posReal[2]],
+                        this.display, this.color));
+                }
+            }
+        }
+        else {
+            let counter = 0;
+            for (let i = 0; i < 6.1 * mqx; i++) {
+                for (let j = 0; j < 6.1 * mqx; j++) {
+                    //console.log(Math.cos(i) * Math.cos(j) * Math.cos(angleW) * rS+this.center.posReal[0])
+                    this.points[counter].changeRealPosNoAdding([
+                        Math.cos(i) * Math.cos(j) * Math.cos(angleW) * rS + this.center.posReal[0],
+                        Math.sin(i) * Math.cos(angleW) * rS + this.center.posReal[1],
+                        Math.sin(j) * Math.cos(i) * Math.cos(angleW) * rS + this.center.posReal[2]])
+                    counter++;
+                }
+            }
+        }
+    }
+    deleteAllPoints() {
+        for (let i = 0; i < this.points.length; i++) {
+            delete Point.all[this.points[i].id];
+        }
+        this.points = [];
+    }
+}
+class Tretahedra extends Shape {
+    static all = {};
+    /**
+     * 
+     * @param {Point} p1 right;
+     * @param {Point} p2 left;
+     * @param {Point} p3 top;
+     * @param {Point} p4 back;
+     * 
+     * all points display must be false. unless this display is true;
+     * 
+    */
+    constructor(p1, p2, p3, p4, display = true, pointdisplay = false, color = 'hsl(200,100%,50%)') {
+        super();
+        this.points = [p1, p2, p3, p4];
+        this.p1 = p1;
+        this.p2 = p2;
+        this.p3 = p3;
+        this.p4 = p4;
+
+        let k = 0;
+        let l = 0;
+        let m = 0;
+        for (let i = 0; i < this.points.length; i++) {
+            k += this.points[i].posReal[0];
+            l += this.points[i].posReal[1];
+            m += this.points[i].posReal[2];
+        };
+        this.center = new Point([k / 4, l / 4, m / 4], pointdisplay);
+
+        this.lines = [];
+        let array = [p1, p2, p3, p4];
+        let c = 0;
+        for (let i = 0; i < array.length; i++) {
+            for (let j = 0; j < array.length; j++) {
+                if (array[j] !== array[i]) {
+                    this.lines.push(new Line(array[j], array[i], display));
+                    this.lines[c].color = color;
+                    c++;
+                }
+            }
+            array[i].display = pointdisplay;
+            array[i].color = color;
+        }
+        this.display = display;
+        this.color = color;
+        this.id = Math.random();
+        Tretahedra.all[this.id] = this;
+    }
+}
+
+
+//new Letter5([0, 0, 5], 0.2)
+//new Letter5([0, 5, 0], 0.2)
+//new Letter5([5, 0, 0], 0.2)
+
+class Letter3 extends Letter {
+    constructor(center, radius, rotate = true, display = true, color = 'hsl(100,100%,50%)', pointdisplay = false, id = `${Math.random() * 100}`) {
+        super(center, radius, rotate, display, color, pointdisplay, id);
+    }
+    doPixAndLines() {
+        this.points.push(new Point([this.center.posReal[0] + this.radius, this.center.posReal[1] + this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0] - this.radius, this.center.posReal[1] + this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0] - this.radius, this.center.posReal[1], this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0] + this.radius, this.center.posReal[1], this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0] + this.radius, this.center.posReal[1] - this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0] - this.radius, this.center.posReal[1] - this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+
+        this.lines.push(new Line(this.points[2], this.points[1], this.display, this.color, 2));
+        this.lines.push(new Line(this.points[1], this.points[3], this.display, this.color, 2));
+        this.lines.push(new Line(this.points[3], this.points[4], this.display, this.color, 2));
+        this.lines.push(new Line(this.points[4], this.points[5], this.display, this.color, 2));
+        this.lines.push(new Line(this.points[5], this.points[6], this.display, this.color, 2));
+
+    }
+}
+
+class Letter7 extends Letter {
+    constructor(center, radius, rotate = true, display = true, color = 'hsl(100,100%,50%)', pointdisplay = false, id = `${Math.random() * 100}`) {
+        super(center, radius, rotate, display, color, pointdisplay, id);
+    }
+    doPixAndLines() {
+        this.points.push(new Point([this.center.posReal[0] - this.radius, this.center.posReal[1] + this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0] + this.radius, this.center.posReal[1] + this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0] - this.radius, this.center.posReal[1] - this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+
+        this.lines.push(new Line(this.points[1], this.points[2], this.display, this.color, 2));
+        this.lines.push(new Line(this.points[2], this.points[3], this.display, this.color, 2));
+    }
+}
+
+class LetterA extends Letter {
+    constructor(center, radius, rotate = true, display = true, color = 'hsl(100,100%,50%)', pointdisplay = false, id = `${Math.random() * 100}`) {
+        super(center, radius, rotate, display, color, pointdisplay, id);
+    }
+    doPixAndLines() {
+        this.points.push(new Point([this.center.posReal[0] + this.radius, this.center.posReal[1], this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0] - this.radius, this.center.posReal[1], this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0] + this.radius, this.center.posReal[1] - (this.radius), this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0] + this.radius, this.center.posReal[1] - (this.radius * 2), this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0] + this.radius, this.center.posReal[1] + this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0] - this.radius, this.center.posReal[1] - this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0] - this.radius, this.center.posReal[1] - (this.radius * 2), this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0] - this.radius, this.center.posReal[1] + this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0], this.center.posReal[1] + (this.radius * 2), this.center.posReal[2]], this.pointdisplay, this.color));
+
+        this.lines.push(new Line(this.points[0], this.points[1], this.display, this.color, 2));
+        this.lines.push(new Line(this.points[0], this.points[2], this.display, this.color, 2));
+        this.lines.push(new Line(this.points[1], this.points[3], this.display, this.color, 2));
+        this.lines.push(new Line(this.points[3], this.points[4], this.display, this.color, 2));
+        this.lines.push(new Line(this.points[1], this.points[5], this.display, this.color, 2));
+        this.lines.push(new Line(this.points[2], this.points[6], this.display, this.color, 2));
+        this.lines.push(new Line(this.points[6], this.points[7], this.display, this.color, 2));
+        this.lines.push(new Line(this.points[2], this.points[8], this.display, this.color, 2));
+        this.lines.push(new Line(this.points[8], this.points[9], this.display, this.color, 2));
+        this.lines.push(new Line(this.points[5], this.points[9], this.display, this.color, 2));
+    }
+}
+
+class Letter1 extends Letter {
+    constructor(center, radius, rotate = true, display = true, color = 'hsl(100,100%,50%)', pointdisplay = false, id = `${Math.random() * 100}`) {
+        super(center, radius, rotate, display, color, pointdisplay, id);
+    }
+    doPixAndLines() {
+        this.points.push(new Point([this.center.posReal[0], this.center.posReal[1] + this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0] + this.radius, this.center.posReal[1] + this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0], this.center.posReal[1] - this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0] - this.radius, this.center.posReal[1] - this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+        this.points.push(new Point([this.center.posReal[0] + this.radius, this.center.posReal[1] - this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+
+        this.lines.push(new Line(this.points[1], this.points[3], this.display, this.color, 2));
+        this.lines.push(new Line(this.points[1], this.points[2], this.display, this.color, 2));
+        this.lines.push(new Line(this.points[4], this.points[5], this.display, this.color, 2));
+    }
+}
+
+class Letter2 extends Letter {
+    constructor(center, radius, rotate = true, display = true, color = 'hsl(100,100%,50%)', pointdisplay = false, id = `${Math.random() * 100}`) {
+        super(center, radius, rotate, display, color, pointdisplay, id);
+    }
+    doPixAndLines() {
+        // Top left
+        this.points.push(new Point([this.center.posReal[0] - this.radius, -this.center.posReal[1] + this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+        // Top right
+        this.points.push(new Point([this.center.posReal[0] + this.radius, -this.center.posReal[1] + this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+        // Middle right
+        this.points.push(new Point([this.center.posReal[0] + this.radius, -this.center.posReal[1], this.center.posReal[2]], this.pointdisplay, this.color));
+        // Bottom left
+        this.points.push(new Point([this.center.posReal[0] - this.radius, -this.center.posReal[1] - this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+        // Bottom right
+        this.points.push(new Point([this.center.posReal[0] + this.radius, -this.center.posReal[1] - this.radius, this.center.posReal[2]], this.pointdisplay, this.color));
+
+        // Top horizontal
+        this.lines.push(new Line(this.points[1], this.points[2], this.display, this.color, 2));
+        // Curve down (diagonal)
+        this.lines.push(new Line(this.points[2], this.points[3], this.display, this.color, 2));
+        // Curve to bottom left
+        this.lines.push(new Line(this.points[3], this.points[4], this.display, this.color, 2));
+        // Bottom horizontal
+        this.lines.push(new Line(this.points[4], this.points[5], this.display, this.color, 2));
+    }
+}
+
+-------
+
+
+class Particle extends Point {
+    static all={}
+    /**
+     * 
+     * @param {number[]} posReal 
+     * @param {boolean} display 
+     * @param {string} color 
+     * @param {number} extra 
+     * @param {number[]} velocity 
+     * @param {number} typeOfEqu - 1 is Regular 3D equation: x+y; 2 is Parametric Surface has x&y; 3 is Vector Field; 4 is Parametric Curve
+     * @param {string} equ - Parsed and split by dimensions (Use usableEquation(equation) if not parsed)
+     */
+    constructor(posReal, velocity = [0, 0, 0], equ, typeOfEqu, display, color = `hsl(${distance3D(posReal, [0, 0, 0])}*10,100%,20%)`, extra = null,) {
+        super(posReal, display, color, extra);
+        this.velocity = velocity;
+        this.equ = equ
+        this.radiusReal=1;
+        this.radiusPix=((factor / 2) * (this.radiusReal) / (posReal[2] - camera.pos[2]));
+        this.typeOfEqu = typeOfEqu;
+        this.counter=0;
+        Particle.all[this.id]=this;
+    }
+    update(dt){
+        if (this.typeOfEqu === 3) { //vector field
+            this.velocity = [
+                this.equ[0].evaluate({ x: this.posReal[0], y: this.posReal[1], z: this.posReal[2] })*dt,
+                this.equ[1].evaluate({ x: this.posReal[0], y: this.posReal[1], z: this.posReal[2] })*dt,
+                this.equ[2].evaluate({ x: this.posReal[0], y: this.posReal[1], z: this.posReal[2] })*dt
+            ]
+        }
+        else {
+            throw new Error(`Particle:${this} has wrong typeOfEqu: ${this.typeOfEqu}.`);
+        }
+        super.changeRealPos(this.velocity);
+    }
+    draw() {
+        this.update(0.005);
+        super.draw();
+    }
+}
+
+--------
+
+/*//--------
+function distanceFunctionDistortion(pos) {
+    pos[0] = (pos[0] / euclidNorm3d(0, 0, 0, pos[0], pos[1], pos[2])) * distanceFunction(0, 0, 0, pos[0], pos[1], pos[2])
+    pos[1] = (pos[1] / euclidNorm3d(0, 0, 0, pos[0], pos[1], pos[2])) * distanceFunction(0, 0, 0, pos[0], pos[1], pos[2])
+    pos[2] = (pos[2] / euclidNorm3d(0, 0, 0, pos[0], pos[1], pos[2])) * distanceFunction(0, 0, 0, pos[0], pos[1], pos[2])
+    return realPointToPixPoint(pos);
+}
+
+function distanceFunction(x1, y1, z1, x2, y2, z2) {
+    return manhattanDistance(x1, y1, z1, x2, y2, z2);
+}
+
+function manhattanDistance(x1, y1, z1, x2, y2, z2) {
+    return Math.abs((x1 - x2)) + Math.abs((y1 - y2)) + Math.abs((z1 - z2));
+}
+function myParabolicDistance(x1, y1, x2, y2) {
+    //xP and yP can be any value
+    let xP = 9; let yP = 9;
+    let a = ((yP * x2) - (xP * y2)) / ((xP * xP * x2) - (xP * x2 * x2));
+    let b = (yP - x2 + (a * x2 * x2) - (a * xP * xP)) / (xP - x2);
+    //let c = y2-b*x2-a*x2*x2;
+    function mokt(x) {
+        let lop = (2 * a * x) + b;
+        let k = Math.sqrt(((lop) ** 2) + 1);
+        return (Math.log(k + lop) / (4 * a)) + ((x / 2) + (b / (4 * a))) * k;
+    }
+    return Math.abs(mokt(x1) - mokt(x2));
+}
+function chebyshevDistance(x1, y1, x2, y2) {
+    return Math.max(Math.abs(x1 - x2), Math.abs(y1 - y2));
+}
+function cosineSimilarityDistance(x1, y1, x2, y2) {
+    return 1 - (((x1 * x2) + (y1 * y2)) / (Math.sqrt((x1 * x1) + (y1 * y1)) * Math.sqrt((x2 * x2) + (y2 * y2))))
+}
+function angularDistance(x1, y1, x2, y2) {
+    return Math.abs(Math.atan2(y2, x2) - Math.atan2(y1, x1))
+}
+function logarithmicDistance(x1, y1, x2, y2) {
+    return Math.log10(1 + Math.abs(x2 - x1) + Math.abs(y2 - y1));
+}
+function expDistance(x1, y1, x2, y2) {
+    return Math.exp(-Math.abs(x2 - x1) - Math.abs(y2 - y1));
+}
+
+//dont change this one
+function euclidNormP(p1, p2) {
+    return Math.sqrt(((p1.x - p2.x) ** 2) + ((p1.y - p2.y) ** 2))
+}
+function euclidNorm(x1, y1, x2, y2) {
+    return Math.sqrt(((x1 - x2) ** 2) + ((y1 - y2) ** 2))
+}
+function euclidNorm3d(x1, y1, z1, x2, y2, z2) {
+    return Math.sqrt(((x1 - x2) ** 2) + ((y1 - y2) ** 2) + ((z1 - z2) ** 2))
+}
+
+//------------------
+function sgn(num) {
+    if (num <= 0) return 0;
+    else return 1;
+}
+
+function wait(milli, func) {
+    let p = setInterval(() => {
+        func();
+        clearInterval(p);
+    }, milli);
+}*/
