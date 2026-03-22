@@ -1,8 +1,9 @@
 import { Cube, Shape } from "./shapes.js";
-import { max , setMax } from "../main.js";
+import { max , setMax } from "./scene.js";
 import { Point } from "./points.js";
 import { Line } from "./lines.js";
 import { Triangle } from "./triangles.js";
+import { determineNewCoords } from "./metric.js";
 
 /** converts user-input equations into usable js */
 function usableEquation(expression) {
@@ -65,17 +66,19 @@ let vectorGraph = false;
 
 
 
-function grapherEqu(equation = 'Math.cos(x)-Math.sin(y)', boundradius = 5, adder = universalAdder) {
+function grapherEqu(equation = 'Math.cos(x)-Math.sin(y)', boundradius = 5, adder=universalAdder) {
 
     if (!graphing) return;
-    setUniversalAdder(equation);
+    //setUniversalAdder(equation);
     let equationJS = usableEquation(equation);
+    //console.log(equationJS, equation, universalAdder)
     //equation=replaceAlll(equation,'tan','Math.tan');
 
     //new Numbers(`${boundradius}`, [boundradius, 0, 0], 0.5, 0);
     //new Numbers(`${boundradius}`, [0, boundradius, 0], 0.5, 0);
     //new Numbers(`${boundradius}`, [0, 0, boundradius], 0.5, 0);
     setMax(boundradius);
+    console.log(boundradius, adder)
 
     let points = [];
     let matrixPoints = [];
@@ -128,6 +131,7 @@ function grapherEqu(equation = 'Math.cos(x)-Math.sin(y)', boundradius = 5, adder
             }
 
             points.push(c);
+            if(!ry)console.log(c,x,y,rx,ry);
 
             if (rx === Math.floor((boundradius * 2) / adder)) break;
             //matrixPoints[rx].push(c);
@@ -202,13 +206,12 @@ function grapherParametricEqu(pointsEq, boundradius = 5, adder = 0.1) {
     //pointsEq=replaceAlll(pointsEq,'tan','Math.tan');
 
     pointsEq = pointsEq.split(',')
-    console.log(usableEquation(pointsEq[2]));
+    //console.log(usableEquation(pointsEq[2]));
     let equationJS = [
         usableEquation(pointsEq[0]),
         usableEquation(pointsEq[1]),
         usableEquation(pointsEq[2])
     ];
-    console.log(equationJS)
     //console.log(pointsEq)
 
     if (outputtedShape) {
@@ -243,9 +246,14 @@ function grapherParametricEqu(pointsEq, boundradius = 5, adder = 0.1) {
             ]
             //prevents from rendering if outside the box
             if (
-                Math.abs(outputs[0]) > boundradius ||
+                (Math.abs(outputs[0]) > boundradius ||
                 Math.abs(outputs[1]) > boundradius ||
-                Math.abs(outputs[2]) > boundradius
+                Math.abs(outputs[2]) > boundradius) && 
+                (
+                    Number.isFinite(outputs[0])&&
+                    Number.isFinite(outputs[1])&&
+                    Number.isFinite(outputs[2])
+                ) 
             ) c = new Point(outputs, false, 'rgb(150, 45, 45)', 2);
             else c = new Point(outputs, false, 'rgb(201, 76, 76)', 1);
 
@@ -330,10 +338,11 @@ function rotateGraph(x, y, z) {
 }
 
 function makeShorterTheMagnitude(pos1, pos2, shortener) {
-    return [(pos1[0] - pos2[0]) / shortener + pos2[0],
+    let dxPos=[(pos1[0] - pos2[0]) / shortener + pos2[0],
     (pos1[1] - pos2[1]) / shortener + pos2[1],
     (pos1[2] - pos2[2]) / shortener + pos2[2]
     ]
+    return determineNewCoords(dxPos[0],dxPos[1],dxPos[2]);
 }
 
 
