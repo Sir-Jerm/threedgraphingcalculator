@@ -1,4 +1,5 @@
-import { ctx, factor, camera, cw } from "../main.js";
+import { ctx, factor, camera, cw } from "./scene.js";
+import { determineNewCoords } from "./metric.js";
 
 function calculationForRealToPix(x, y, z) {
     return [(factor * (x - camera.pos[0]) / (z - camera.pos[2])) + (cw / 2),
@@ -32,11 +33,11 @@ class Point {
      * @param {string} extra 
      */
     constructor(posReal, display, color = `hsl(${distance3D(posReal, [0, 0, 0])}*10,100%,20%)`, extra = null) {
-        this.posReal = posReal;
-        this.posPix = realPointToPixPoint(posReal);
+        this.posReal = determineNewCoords(posReal[0],posReal[1],posReal[2]);
+        this.posPix = realPointToPixPoint(this.posReal);
         //this.posPix = distanceFunctionDistortion(posReal);
         this.radiusReal = 0.001;
-        this.radiusPix = ((factor / 2) * (this.radiusReal) / (posReal[2] - camera.pos[2]));
+        this.radiusPix = ((factor / 2) * (this.radiusReal) / (this.posReal[2] - camera.pos[2]));
         this.color = color;
         this.display = display;
         if (extra) {
@@ -52,6 +53,14 @@ class Point {
         //this.posPix = distanceFunctionDistortion(this.posReal);
         this.radiusReal = 0.1;
         this.radiusPix = (factor / 2 * (this.radiusReal) / (this.posReal[2] - camera.pos[2]));
+    }
+    setRealPos(pos){
+        this.posReal=pos;
+        this.posPix = realPointToPixPoint(this.posReal);
+        //this.posPix = distanceFunctionDistortion(this.posReal);
+        this.radiusReal = 0.1;
+        this.radiusPix = (factor / 2 * (this.radiusReal) / (this.posReal[2] - camera.pos[2]));
+
     }
     changeRealPosNoAdding(coords) {
         this.posReal = coords;
