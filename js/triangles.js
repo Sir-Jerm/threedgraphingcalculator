@@ -1,4 +1,4 @@
-import { ctx, camera } from "../main.js";
+import { ctx, camera } from "./scene.js";
 import { Point } from "./points.js";
 
 function hueBasedOnheight(height) {
