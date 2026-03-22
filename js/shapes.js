@@ -1,4 +1,3 @@
-import { ctx } from "../main.js";
 import { Point } from "./points.js";
 import { Line } from "./lines.js";
 import { Triangle } from "./triangles.js";
@@ -72,7 +71,7 @@ class Shape {
         this.display = display;
         this.lines = lines;
         this.triangles = triangles;
-        if (typeof points == Array) this.center = new Point(findCenter(this.points), false);
+        if (Array.isArray(points)) this.center = new Point(findCenter(this.points), false);
     }
 
     changeDisplay() {
@@ -93,7 +92,14 @@ class Shape {
      */
     rotateByYPoint(angle, point) {
         for (let i = 0; i < this.points.length; i++) {
-            if(this.points[i]) this.points[i].changeRealPos(subtractCoords(rotateYByPoint(this.points[i], point, angle), this.points[i].posReal));
+            // if(this.points[i]) this.points[i].changeRealPos(
+            //     subtractCoords(
+            //         rotateYByPoint(
+            //             this.points[i], point, angle
+            //         ), this.points[i].posReal
+            //     )
+            // );
+            if(this.points[i]) this.points[i].setRealPos(rotateYByPoint(this.points[i],point,angle));
         }
         if (this.lines) {
             for (let i = 0; i < this.lines.length; i++) {
@@ -107,7 +113,14 @@ class Shape {
     */
     rotateByXPoint(angle, point) {
         for (let i = 0; i < this.points.length; i++) {
-            if(this.points[i]) this.points[i].changeRealPos(subtractCoords(rotateXByPoint(this.points[i], point, angle), this.points[i].posReal));
+            // if(this.points[i]) this.points[i].changeRealPos(
+            //     subtractCoords(
+            //         rotateYByPoint(
+            //             this.points[i], point, angle
+            //         ), this.points[i].posReal
+            //     )
+            // );
+            if(this.points[i]) this.points[i].setRealPos(rotateXByPoint(this.points[i],point,angle));
         }
         if (this.lines) {
             for (let i = 0; i < this.lines.length; i++) {
@@ -121,7 +134,7 @@ class Shape {
      */
     rotateByZPoint(angle, point) {
         for (let i = 0; i < this.points.length; i++) {
-            if(this.points[i]) this.points[i].changeRealPos(subtractCoords(rotateZByPoint(this.points[i], point, angle), this.points[i].posReal));
+            if(this.points[i]) this.points[i].setRealPos(rotateZByPoint(this.points[i],point,angle));
         }
         if (this.lines) {
             for (let i = 0; i < this.lines.length; i++) {
@@ -139,6 +152,7 @@ class Shape {
         this.rotateByXPoint(angleX, point);
         this.rotateByYPoint(angleY, point);
         this.rotateByZPoint(angleZ, point);
+        //console.log(this.points);
     }
 
     deleteAllPoints() {
@@ -208,7 +222,8 @@ class Cube extends Shape {
             m += this.points[i].posReal[2];
             this.points[i].display = pointdisplay;
         };
-        this.center = new Point([k / 8, l / 8, m / 8], pointdisplay, color);
+        this.center = new Point([k / 8 || 0, l / 8 || 0, m / 8 || 0], pointdisplay, color);
+        //console.log(this.center, k/8, l/8, m/8);
 
         this.lines = [
             new Line(p8, p7, display, color, linewidth),
