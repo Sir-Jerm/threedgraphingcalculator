@@ -1,4 +1,4 @@
-import { ctx } from "../main.js";
+import { ctx } from "./scene.js";
 
 function hueBasedOnheight(height) {
     return height * 30;
