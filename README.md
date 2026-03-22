@@ -14,3 +14,12 @@ Both parametric features use the range 0-6.28.
 Vector fields must be graphed in point form (x-y+z,y+x+z,x-z+y) and can use three variables
 
 -----------
+
+### Custom Rendering Pipeline
+
+Points are projected from 3D to 2D using a manual perspective function:
+
+- Each point is transformed using a **custom distance metric** (Euclidean or non-Euclidean)
+- 3D coordinates are converted to 2D canvas pixels with a perspective scale
+- Point radius decreases with distance to simulate depth
+- Points are stored globally for easy updates and rendering
