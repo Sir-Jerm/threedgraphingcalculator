@@ -1,16 +1,27 @@
-# 3d-graphing-calculator
-- Its a 3d graphing calculator capable of wireframe or mesh renderings. 
-- Additionally, this can also graph parametric surfaces, parametric curves, and vector fields.
-- It can change Metric Functions into non-Euclidean Spaces.
+# 3d Graphing Calculator 
 
 -----------
 ### Website: https://sir-jerm.github.io/threedgraphingcalculator/
 
 -----------
 
-- Changes metrics into any given the form (x1,y1,z1) and (x2,y2,z2).
-- To graph its regular 3d equations put in the form x+y=z.
-- To graph parametric surfaces you must use two variables (x and y) and put it in the form x+y,x-y,x.
+- Able to visualize Parametric Surfaces and Curves, Vector Fields, and Bivariate (two inputs) Functions.
+- It can change Metric Functions into non-Euclidean Spaces.
+
+Bivariate Function: 
+<img width="597" height="515" alt="Screenshot 2026-05-29 213015" src="https://github.com/user-attachments/assets/50302187-90c8-4708-ad4f-55150ff34978" />
+
+Parametric Surface:
+<img width="556" height="662" alt="Screenshot 2026-05-29 213151" src="https://github.com/user-attachments/assets/d703decf-fdaa-4c87-af44-07f38f8ac82f" />
+
+Vector Fields:
+<img width="632" height="682" alt="Screenshot 2026-05-29 213359" src="https://github.com/user-attachments/assets/08cb0dfc-9145-4f7f-bd53-d45f698a7172" />
+
+-----------
+
+- Changes metrics into any given the formula using (x1,y1,z1) variables and (x2,y2,z2) variables.
+- Able to graph regular 3d equations put in the form x+y=z.
+- Able to graph parametric surfaces you must use two variables (x and y) and put it in the form x+y,x-y,x.
 - To graph parametric curves you must use one variable (t) and put in the form t,t+5,-t.
 - Both parametric features use the range 0-6.28.
 
