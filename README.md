@@ -7,14 +7,18 @@
 
 - Able to visualize Parametric Surfaces and Curves, Vector Fields, and Bivariate (two inputs) Functions.
 - It can change Metric Functions into non-Euclidean Spaces.
+- Moveable Camera with WASD and Rotations (Click and move cursor)
 
-Bivariate Function: 
+Bivariate Function:
+
 <img width="597" height="515" alt="Screenshot 2026-05-29 213015" src="https://github.com/user-attachments/assets/50302187-90c8-4708-ad4f-55150ff34978" />
 
 Parametric Surface:
+
 <img width="556" height="662" alt="Screenshot 2026-05-29 213151" src="https://github.com/user-attachments/assets/d703decf-fdaa-4c87-af44-07f38f8ac82f" />
 
 Vector Fields:
+
 <img width="632" height="682" alt="Screenshot 2026-05-29 213359" src="https://github.com/user-attachments/assets/08cb0dfc-9145-4f7f-bd53-d45f698a7172" />
 
 -----------
