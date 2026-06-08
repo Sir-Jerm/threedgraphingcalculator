@@ -22,21 +22,33 @@ Vector Fields:
 <img width="632" height="682" alt="Screenshot 2026-05-29 213359" src="https://github.com/user-attachments/assets/08cb0dfc-9145-4f7f-bd53-d45f698a7172" />
 
 Custom Metric Functions:
+
 <img width="497" height="535" alt="Screenshot 2026-06-08 172812" src="https://github.com/user-attachments/assets/f4c6e513-2c0f-4498-98f6-e82f4b007ee5" />
 
 -----------
 
 main/
+
 |--js/
+
   |--calculator.js
+  
   |--metric.js
+  
   |--points.js
+  
   |--lines.js
+  
   |--triangles.js
+  
   |--shapes.js
+  
   etc
+  
 |--main.js
+
 |--index.html
+
 etc
 
 -----------
