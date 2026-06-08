@@ -31,17 +31,17 @@ main/
 
 |--js/
 
-  |--calculator.js
+  |--js/calculator.js
   
-  |--metric.js
+  |--js/metric.js
   
-  |--points.js
+  |--js/points.js
   
-  |--lines.js
+  |--js/lines.js
   
-  |--triangles.js
+  |--js/triangles.js
   
-  |--shapes.js
+  |--js/shapes.js
   
   etc
   
